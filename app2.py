@@ -23,7 +23,16 @@ df['Date'] = pd.to_datetime(df['Date'])
 
 # Sidebar filters
 users = df['User'].unique()
-selected_user = st.sidebar.selectbox('Select User', options=['All'] + list(users))
+
+# Find the index of 'Jarid' and convert it to int
+index_jarid = int(np.where(users == 'Jarid')[0][0]) + 1  # Add 1 because 'All' is the first element
+
+# Make sure 'Jarid' is in the list or array
+selected_user = st.sidebar.selectbox(
+    'Select User', 
+    options=['All'] + list(users),  # Convert users to a list if it's a numpy array
+    index=index_jarid  # Set the index to the found value
+)
 
 # Filter by user
 if selected_user != 'All':
