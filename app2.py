@@ -10,7 +10,7 @@ from streamlit_gsheets import GSheetsConnection
 
 st.set_page_config(layout="wide")
 
-url = "https://docs.google.com/spreadsheets/d/1cZvi2XmgW1NkKwUz2DxbjhWSkNjJfFTg3130N6BO-k8/edit?usp=sharing"
+url = "https://docs.google.com/spreadsheets/d/1MCHZrwjdYxpkhxk3LRrCLfoIoARFs8Vhqn1LnSqvq7Y/edit?usp=sharing"
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 
