@@ -14,7 +14,7 @@ url = "https://docs.google.com/spreadsheets/d/1MCHZrwjdYxpkhxk3LRrCLfoIoARFs8Vhq
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-df = conn.read(spreadsheet=url, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+df = conn.read(spreadsheet=url, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 
 # Remove rows where the 'User' column is NaN
 df = df.dropna(subset=['User'])
