@@ -25,7 +25,7 @@ df['Date'] = pd.to_datetime(df['Date'])
 users = df['User'].unique()
 
 # Find the index of 'Jarid' and convert it to int
-index_jarid = int(np.where(users == 'Jarid')[0][0]) + 1  # Add 1 because 'All' is the first element
+index_jarid = int(np.where(users == 'Campos')[0][0]) + 1  # Add 1 because 'All' is the first element
 
 # Make sure 'Jarid' is in the list or array
 selected_user = st.sidebar.selectbox(
@@ -84,6 +84,20 @@ with col4:
 with col5:
     st.metric("Total Units", f"{total_units:.2f}")
 
+# Create a DataFrame with User-wise stats (WinPct and Units)
+user_stats = df.groupby('User').agg(
+    WinPct=('Win_Loss_Push', lambda x: (x == 'w').sum() / len(x) * 100),
+    Units=('Units_W_L', 'sum')
+).reset_index()
+
+user_stats['WinPct'] = user_stats['WinPct'].round(2)
+user_stats['Units'] = user_stats['Units'].round(2)
+
+# Display User-wise stats table
+st.subheader("User Win Percentage and Units")
+st.dataframe(user_stats.sort_values(by='Units', ascending=False))
+
+
 # Cumulative Units Calculation
 df_cumulative = df.groupby('Date').agg({'Units_W_L': 'sum'}).cumsum().reset_index()
 df_cumulative.rename(columns={'Units_W_L': 'Units'}, inplace=True)
@@ -134,33 +148,8 @@ fig_weekly.update_layout(
     xaxis_tickangle=-45,
 )
 
-# Filter data for side plays
-df_filtered = df[df['Side_Play'] == 1]
-df_daily_filtered_sum = df_filtered.groupby('Date')['Units_W_L'].sum().reset_index()
-
-# Create Daily Bar Chart for filtered data
-fig_daily_filtered = go.Figure()
-fig_daily_filtered.add_trace(go.Bar(
-    x=df_daily_filtered_sum['Date'],
-    y=df_daily_filtered_sum['Units_W_L'],
-    marker=dict(color=df_daily_filtered_sum['Units_W_L'].apply(lambda x: 'green' if x > 0 else 'red')),
-    text=df_daily_filtered_sum['Units_W_L'].round(2),
-    textposition='auto',
-    hoverinfo='x+y+text',
-))
-
-fig_daily_filtered.update_layout(
-    title='Daily Units Won / Lost Side Plays',
-    xaxis_title='Date',
-    yaxis_title='Units Won / Lost',
-    showlegend=False,
-    template='plotly_white',
-    xaxis_tickangle=-45,
-)
-
 # Display the charts
 st.plotly_chart(fig_daily, key='daily_chart')
-st.plotly_chart(fig_daily_filtered, key='daily_filtered_chart')  # Unique key
 st.plotly_chart(fig_weekly, key='weekly_chart')  # Unique key
 
 # Summary table
@@ -172,19 +161,6 @@ summary_table = summary_table.sort_values(by='Units', ascending=False)
 
 st.subheader("Units Summary by Sport")
 st.table(summary_table)
-
-# Create a DataFrame with User-wise stats (WinPct and Units)
-user_stats = df.groupby('User').agg(
-    WinPct=('Win_Loss_Push', lambda x: (x == 'w').sum() / len(x) * 100),
-    Units=('Units_W_L', 'sum')
-).reset_index()
-
-user_stats['WinPct'] = user_stats['WinPct'].round(2)
-user_stats['Units'] = user_stats['Units'].round(2)
-
-# Display User-wise stats table
-st.subheader("User Win Percentage and Units")
-st.dataframe(user_stats)
 
 # Calendar for daily units
 calendar_data = df.groupby(df['Date'].dt.date)['Units_W_L'].sum().reset_index()
