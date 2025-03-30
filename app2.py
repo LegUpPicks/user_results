@@ -123,9 +123,9 @@ with col1:
 with col2:
     current_date = pd.Timestamp.now()
     start_of_week = current_date - pd.Timedelta(days=current_date.weekday())
+    start_of_week = start_of_week.normalize()
     df_this_week = df[df['Date'] >= start_of_week]
     df_this_week = df_this_week[df_this_week['Date'] <= current_date]
-
     Star_stats_current_week = df_this_week.groupby('Star').agg(
         WinPct=('Win_Loss_Push', lambda x: (x == 'w').sum() / len(x) * 100),
         Units=('Units_W_L', 'sum')
