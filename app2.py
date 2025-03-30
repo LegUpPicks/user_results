@@ -184,8 +184,8 @@ fig_weekly.update_layout(
 )
 
 # Display the charts
+st.plotly_chart(fig_weekly, key='weekly_chart')
 st.plotly_chart(fig_daily, key='daily_chart')
-st.plotly_chart(fig_weekly, key='weekly_chart')  # Unique key
 
 # # Summary table
 # summary_table = df.groupby('Sport')['Units_W_L'].sum().reset_index()
