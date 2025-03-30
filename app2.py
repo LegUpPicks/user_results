@@ -160,7 +160,7 @@ fig_daily.update_layout(
 )
 
 # Create Weekly Bar Chart using Plotly
-df['Week'] = df['Date'].dt.to_period('W-MON').dt.start_time  # Convert dates to start of the week
+df['Week'] = df['Date'].dt.to_period('W-SUN').dt.start_time  # Convert dates to start of the week
 df_weekly_sum = df.groupby('Week')['Units_W_L'].sum().reset_index()
 
 fig_weekly = go.Figure()
