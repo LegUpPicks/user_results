@@ -10,29 +10,53 @@ from streamlit_gsheets import GSheetsConnection
 
 st.set_page_config(layout="wide")
 
-url = "https://docs.google.com/spreadsheets/d/1MCHZrwjdYxpkhxk3LRrCLfoIoARFs8Vhqn1LnSqvq7Y/edit?usp=sharing"
-
 conn = st.connection("gsheets", type=GSheetsConnection)
+url_nim = "https://docs.google.com/spreadsheets/d/1H6vyNE7ufFom5absjZ6aG37ITjKeYumVLjPnTtwE6Zo/edit?usp=sharing"
+df_nimzy = conn.read(spreadsheet=url_nim, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_nimzy['Star'] = 'Nimzy'
 
-df = conn.read(spreadsheet=url, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
+url_kfalk = "https://docs.google.com/spreadsheets/d/1AxRj1wIxRT6exH5sYdiODNDJy9E5lNbQzp3KJjcOTT8/edit?usp=sharing"
+df_kfalk = conn.read(spreadsheet=url_kfalk, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_kfalk['Star'] = 'KFalker'
 
-# Remove rows where the 'User' column is NaN
-df = df.dropna(subset=['User'])
+url_rip = "https://docs.google.com/spreadsheets/d/1Ek6QqNiKbx9bD45nG8cx1Kx0hT3OSrtJuBsIlpJ859k/edit?usp=sharing"
+df_rip = conn.read(spreadsheet=url_rip, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_rip['Star'] = 'RipRap'
+
+url_cpa = "https://docs.google.com/spreadsheets/d/1Sbu2nlyHqpKD4S04fHqj5hIbYPvKMpqr6IGi2UqJUjo/edit?usp=sharing"
+df_cpa = conn.read(spreadsheet=url_cpa, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_cpa['Star'] = 'CPA_Poke'
+
+url_jarid = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcDSpJ_CHi3oLwj238kw/edit?usp=sharing"
+df_jarid = conn.read(spreadsheet=url_jarid, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_jarid['Star'] = 'Jarid'
+
+url_warren = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcDSpJ_CHi3oLwj238kw/edit?usp=sharing"
+df_warren = conn.read(spreadsheet=url_warren, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_warren['Star'] = 'Warren'
+
+dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren]
+df_all = pd.concat(dfs)
+
+# Reset index (optional, if you want a clean index)
+df = df_all.reset_index(drop=True)
+
+#st.dataframe(df)
 
 df['Date'] = pd.to_datetime(df['Date'])
 
 # Sidebar filters
-users = df['User'].unique()
+Stars = df['Star'].unique()
 
 # Make sure 'Jarid' is in the list or array
-selected_user = st.sidebar.selectbox(
-    'Select User', 
-    options=['All'] + list(users)  # 'All' is always the first element
+selected_Star = st.sidebar.selectbox(
+    'Select Community Star', 
+    options=['All'] + list(Stars)  # 'All' is always the first element
 )
 
-# Filter by user
-if selected_user != 'All':
-    df = df[df['User'] == selected_user]
+# Filter by Star
+if selected_Star != 'All':
+    df = df[df['Star'] == selected_Star]
 
 # Sidebar: Filter by Sport
 sports = df['Sport'].unique()
@@ -80,19 +104,34 @@ with col4:
 with col5:
     st.metric("Total Units", f"{total_units:.2f}")
 
-# Create a DataFrame with User-wise stats (WinPct and Units)
-user_stats = df.groupby('User').agg(
+# Create a DataFrame with Star-wise stats (WinPct and Units)
+Star_stats = df.groupby('Star').agg(
     WinPct=('Win_Loss_Push', lambda x: (x == 'w').sum() / len(x) * 100),
     Units=('Units_W_L', 'sum')
 ).reset_index()
 
-user_stats['WinPct'] = user_stats['WinPct'].round(2)
-user_stats['Units'] = user_stats['Units'].round(2)
+Star_stats['WinPct'] = Star_stats['WinPct'].round(2)
+Star_stats['Units'] = Star_stats['Units'].round(2)
 
-# Display User-wise stats table
-st.subheader("User Win Percentage and Units")
-st.dataframe(user_stats.sort_values(by='Units', ascending=False))
+col1, col2 = st.columns(2)
 
+# Display Star-wise stats table
+with col1:
+    st.subheader("Star Win Percentage and Units Total")
+    st.dataframe(Star_stats.sort_values(by='Units', ascending=False))
+
+with col2:
+    current_date = pd.Timestamp.now()
+    start_of_week = current_date - pd.Timedelta(days=current_date.weekday())
+    df_this_week = df[df['Date'] >= start_of_week]
+    df_this_week = df_this_week[df_this_week['Date'] <= current_date]
+
+    Star_stats_current_week = df_this_week.groupby('Star').agg(
+        WinPct=('Win_Loss_Push', lambda x: (x == 'w').sum() / len(x) * 100),
+        Units=('Units_W_L', 'sum')
+    ).reset_index()
+    st.subheader("Star Win Percentage and Units Current Week")
+    st.dataframe(Star_stats_current_week.sort_values(by='Units', ascending=False))
 
 # Cumulative Units Calculation
 df_cumulative = df.groupby('Date').agg({'Units_W_L': 'sum'}).cumsum().reset_index()
@@ -148,29 +187,29 @@ fig_weekly.update_layout(
 st.plotly_chart(fig_daily, key='daily_chart')
 st.plotly_chart(fig_weekly, key='weekly_chart')  # Unique key
 
-# Summary table
-summary_table = df.groupby('Sport')['Units_W_L'].sum().reset_index()
-summary_table.rename(columns={'Units_W_L': 'Units'}, inplace=True)
-summary_table['Units'] = summary_table['Units'].round(2)
+# # Summary table
+# summary_table = df.groupby('Sport')['Units_W_L'].sum().reset_index()
+# summary_table.rename(columns={'Units_W_L': 'Units'}, inplace=True)
+# summary_table['Units'] = summary_table['Units'].round(2)
 
-summary_table = summary_table.sort_values(by='Units', ascending=False)
+# summary_table = summary_table.sort_values(by='Units', ascending=False)
 
-st.subheader("Units Summary by Sport")
-st.table(summary_table)
+# st.subheader("Units Summary by Sport")
+# st.table(summary_table)
 
-# Calendar for daily units
-calendar_data = df.groupby(df['Date'].dt.date)['Units_W_L'].sum().reset_index()
-calendar_data['Date'] = pd.to_datetime(calendar_data['Date'])
+# # Calendar for daily units
+# calendar_data = df.groupby(df['Date'].dt.date)['Units_W_L'].sum().reset_index()
+# calendar_data['Date'] = pd.to_datetime(calendar_data['Date'])
 
-df = df.sort_values(by='Date', ascending=False)
+# df = df.sort_values(by='Date', ascending=False)
 
-# Display full data
-st.header('Full Data')
-df['Date'] = df['Date'].dt.strftime('%m/%d/%Y')
-st.dataframe(df)
+# # Display full data
+# st.header('Full Data')
+# df['Date'] = df['Date'].dt.strftime('%m/%d/%Y')
+# st.dataframe(df)
 
-# Create the cumulative plot
-fig = px.line(df_cumulative, x='Date', y='Units', title='Cumulative Units Over Time')
+# # Create the cumulative plot
+# fig = px.line(df_cumulative, x='Date', y='Units', title='Cumulative Units Over Time')
 
-# Display the plot
-st.plotly_chart(fig, key='cumulative_chart')
+# # Display the plot
+# st.plotly_chart(fig, key='cumulative_chart')
