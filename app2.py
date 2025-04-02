@@ -35,7 +35,12 @@ url_warren = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcD
 df_warren = conn.read(spreadsheet=url_warren, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
 df_warren['Star'] = 'Warren'
 
-dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren]
+url_s_s = "https://docs.google.com/spreadsheets/d/1mKc7bJDMGqmViScDsl-dlzcpCwjX_qQ5tt2_FiRpHd4/edit?usp=sharing"
+df_s_s = conn.read(spreadsheet=url_s_s, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_s_s['Star'] = 'San_Solares'
+
+
+dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren,df_s_s]
 df_all = pd.concat(dfs)
 
 # Reset index (optional, if you want a clean index)
