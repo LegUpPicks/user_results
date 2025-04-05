@@ -126,7 +126,7 @@ col1, col2 = st.columns(2)
 # Display Star-wise stats table
 with col1:
     st.subheader("Star Win Percentage and Units Total")
-    st.dataframe(Star_stats.sort_values(by='Units', ascending=False))
+    st.dataframe(Star_stats.sort_values(by='Units', ascending=False), hide_index=True)
 
 with col2:
     current_date = pd.Timestamp.now()
@@ -139,7 +139,7 @@ with col2:
         Units=('Units_W_L', 'sum')
     ).reset_index()
     st.subheader("Star Win Percentage and Units Current Week")
-    st.dataframe(Star_stats_current_week.sort_values(by='Units', ascending=False))
+    st.dataframe(Star_stats_current_week.sort_values(by='Units', ascending=False), hide_index=True)
 
 # Cumulative Units Calculation
 df_cumulative = df.groupby('Date').agg({'Units_W_L': 'sum'}).cumsum().reset_index()
