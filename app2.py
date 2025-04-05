@@ -39,8 +39,11 @@ url_s_s = "https://docs.google.com/spreadsheets/d/1mKc7bJDMGqmViScDsl-dlzcpCwjX_
 df_s_s = conn.read(spreadsheet=url_s_s, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
 df_s_s['Star'] = 'San_Solares'
 
+url_murt = "https://docs.google.com/spreadsheets/d/1x24mZBijLk5zCMwRRXr9UwUErWofqPo98JduY8ldUjw/edit?usp=sharing"
+df_murt = conn.read(spreadsheet=url_murt, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_murt['Star'] = 'MurtDoc'
 
-dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren,df_s_s]
+dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren,df_s_s,df_murt]
 df_all = pd.concat(dfs)
 
 # Reset index (optional, if you want a clean index)
