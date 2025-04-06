@@ -12,35 +12,35 @@ st.set_page_config(layout="wide")
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 url_nim = "https://docs.google.com/spreadsheets/d/1H6vyNE7ufFom5absjZ6aG37ITjKeYumVLjPnTtwE6Zo/edit?usp=sharing"
-df_nimzy = conn.read(spreadsheet=url_nim, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_nimzy = conn.read(spreadsheet=url_nim, usecols=[0, 1, 2, 3, 4, 5, 6, 7,8])
 df_nimzy['Star'] = 'Nimzy'
 
 url_kfalk = "https://docs.google.com/spreadsheets/d/1AxRj1wIxRT6exH5sYdiODNDJy9E5lNbQzp3KJjcOTT8/edit?usp=sharing"
-df_kfalk = conn.read(spreadsheet=url_kfalk, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_kfalk = conn.read(spreadsheet=url_kfalk, usecols=[0, 1, 2, 3, 4, 5, 6, 7,8])
 df_kfalk['Star'] = 'KFalker'
 
 url_rip = "https://docs.google.com/spreadsheets/d/1Ek6QqNiKbx9bD45nG8cx1Kx0hT3OSrtJuBsIlpJ859k/edit?usp=sharing"
-df_rip = conn.read(spreadsheet=url_rip, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_rip = conn.read(spreadsheet=url_rip, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_rip['Star'] = 'RipRap'
 
 url_cpa = "https://docs.google.com/spreadsheets/d/1Sbu2nlyHqpKD4S04fHqj5hIbYPvKMpqr6IGi2UqJUjo/edit?usp=sharing"
-df_cpa = conn.read(spreadsheet=url_cpa, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_cpa = conn.read(spreadsheet=url_cpa, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_cpa['Star'] = 'CPA_Poke'
 
 url_jarid = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcDSpJ_CHi3oLwj238kw/edit?usp=sharing"
-df_jarid = conn.read(spreadsheet=url_jarid, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_jarid = conn.read(spreadsheet=url_jarid, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_jarid['Star'] = 'Jarid'
 
 url_warren = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcDSpJ_CHi3oLwj238kw/edit?usp=sharing"
-df_warren = conn.read(spreadsheet=url_warren, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_warren = conn.read(spreadsheet=url_warren, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_warren['Star'] = 'Warren'
 
 url_s_s = "https://docs.google.com/spreadsheets/d/1mKc7bJDMGqmViScDsl-dlzcpCwjX_qQ5tt2_FiRpHd4/edit?usp=sharing"
-df_s_s = conn.read(spreadsheet=url_s_s, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_s_s = conn.read(spreadsheet=url_s_s, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_s_s['Star'] = 'San_Solares'
 
 url_murt = "https://docs.google.com/spreadsheets/d/1x24mZBijLk5zCMwRRXr9UwUErWofqPo98JduY8ldUjw/edit?usp=sharing"
-df_murt = conn.read(spreadsheet=url_murt, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+df_murt = conn.read(spreadsheet=url_murt, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_murt['Star'] = 'MurtDoc'
 
 dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren,df_s_s,df_murt]
@@ -56,7 +56,16 @@ df['Date'] = pd.to_datetime(df['Date'])
 # Sidebar filters
 Stars = df['Star'].unique()
 
-# Make sure 'Jarid' is in the list or array
+option = st.sidebar.radio(
+    'Choose to view only POTD or All Plays',
+    ('All Picks', 'POTD')
+)
+
+if option == 'POTD':
+    df = df[df['POTD'] == 1]
+else:
+    df = df
+
 selected_Star = st.sidebar.selectbox(
     'Select Community Star', 
     options=['All'] + list(Stars)  # 'All' is always the first element
