@@ -43,7 +43,11 @@ url_murt = "https://docs.google.com/spreadsheets/d/1x24mZBijLk5zCMwRRXr9UwUErWof
 df_murt = conn.read(spreadsheet=url_murt, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_murt['Star'] = 'MurtDoc'
 
-dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren,df_s_s,df_murt]
+url_ecu = "https://docs.google.com/spreadsheets/d/1Odzv_kYO0KvfmhXiK-H23KjzrPX_k8xbqstCGIEJwmU/edit?usp=sharing"
+df_ecu = conn.read(spreadsheet=url_ecu, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
+df_ecu['Star'] = 'EcuAlum'
+
+dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren,df_s_s,df_murt, df_ecu]
 df_all = pd.concat(dfs)
 
 # Reset index (optional, if you want a clean index)
