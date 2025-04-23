@@ -27,9 +27,9 @@ url_cpa = "https://docs.google.com/spreadsheets/d/1Sbu2nlyHqpKD4S04fHqj5hIbYPvKM
 df_cpa = conn.read(spreadsheet=url_cpa, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_cpa['Star'] = 'CPA_Poke'
 
-url_jarid = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcDSpJ_CHi3oLwj238kw/edit?usp=sharing"
-df_jarid = conn.read(spreadsheet=url_jarid, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
-df_jarid['Star'] = 'Jarid'
+# url_jarid = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcDSpJ_CHi3oLwj238kw/edit?usp=sharing"
+# df_jarid = conn.read(spreadsheet=url_jarid, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
+# df_jarid['Star'] = 'Jarid'
 
 url_warren = "https://docs.google.com/spreadsheets/d/1Z562MfsoJyXdr-usiUEEokCdcDSpJ_CHi3oLwj238kw/edit?usp=sharing"
 df_warren = conn.read(spreadsheet=url_warren, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
@@ -47,8 +47,29 @@ url_ecu = "https://docs.google.com/spreadsheets/d/1Odzv_kYO0KvfmhXiK-H23KjzrPX_k
 df_ecu = conn.read(spreadsheet=url_ecu, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_ecu['Star'] = 'EcuAlum'
 
-dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_jarid, df_warren,df_s_s,df_murt, df_ecu]
+url_calm = "https://docs.google.com/spreadsheets/d/1-ybVwvFP3_ZWi_eiHV9zYxUuDh718SptHbcGj8I3VYo/edit?usp=sharing"
+df_calm = conn.read(spreadsheet=url_calm, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
+df_calm['Star'] = 'Calm'
+
+url_leg = "https://docs.google.com/spreadsheets/d/1AEiuEVQFHetOawGOWqpl2MbuPXcWsb6eeK01oRE8gGQ/edit?usp=sharing"
+df_leg = conn.read(spreadsheet=url_leg, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8,9])
+df_leg = df_leg.rename(columns={
+    'American Odds': 'Odds',
+    'Units Wagered': 'Units',
+    'Units Gained': 'Units_W_L'
+})
+df_leg['Game'] = df_leg['Bet']
+leg_cols = ['Date', 'Game', 'Bet', 'Sport', 'Odds', 'Win_Loss_Push', 
+                 'Units', 'Units_W_L', 'POTD']
+df_leg = df_leg[leg_cols]
+df_leg['Star'] = 'LegUp'
+
+dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_warren,df_s_s,df_murt, df_ecu, df_calm, df_leg]
 df_all = pd.concat(dfs)
+df_all['Date'] = pd.to_datetime(df_all['Date'])
+
+# Filter for dates on or after April 7th
+df_all = df_all[df_all['Date'] >= '2025-04-07']
 
 # Reset index (optional, if you want a clean index)
 df = df_all.reset_index(drop=True)
