@@ -63,13 +63,11 @@ leg_cols = ['Date', 'Game', 'Bet', 'Sport', 'Odds', 'Win_Loss_Push',
                  'Units', 'Units_W_L', 'POTD']
 df_leg = df_leg[leg_cols]
 df_leg['Star'] = 'LegUp'
+df_leg['Date'] = pd.to_datetime(df_leg['Date'])
+df_leg = df_leg[df_leg['Date'] >= '2025-04-07']
 
 dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_warren,df_s_s,df_murt, df_ecu, df_calm, df_leg]
 df_all = pd.concat(dfs)
-df_all['Date'] = pd.to_datetime(df_all['Date'])
-
-# Filter for dates on or after April 7th
-df_all = df_all[df_all['Date'] >= '2025-04-07']
 
 # Reset index (optional, if you want a clean index)
 df = df_all.reset_index(drop=True)
