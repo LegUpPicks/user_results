@@ -69,7 +69,7 @@ df_all = pd.concat(dfs)
 df_all['Date'] = pd.to_datetime(df_all['Date'])
 
 # Filter for dates on or after April 7th
-df_all = df_all[df_all['Date'] >= '2025-04-07']
+df_all = df_all[df_all['Date'] >= '2025-02-17']
 
 # Reset index (optional, if you want a clean index)
 df = df_all.reset_index(drop=True)
