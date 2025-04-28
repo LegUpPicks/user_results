@@ -257,28 +257,26 @@ st.plotly_chart(fig_daily, key='daily_chart')
 
 
 
-# --- Last Week Units by Star ---
-st.header("Star Win Percentage and Units Last Week")
+today = pd.Timestamp.now().normalize()
+current_week_start = today - pd.Timedelta(days=today.weekday())  # this week's Monday
+previous_week_start = current_week_start - pd.Timedelta(days=7)  # previous week's Monday
+previous_week_end = current_week_start - pd.Timedelta(days=1)    # previous week's Sunday
 
-# Define last week's start and end
-today = pd.Timestamp.now()
-start_of_this_week = today - pd.Timedelta(days=today.weekday())
-start_of_last_week = start_of_this_week - pd.Timedelta(days=7)
-end_of_last_week = start_of_this_week - pd.Timedelta(seconds=1)
+# Filter data
+df_previous_week = df[(df['Date'] >= previous_week_start) & (df['Date'] <= previous_week_end)]
 
-# Filter for last week's data
-df_last_week = df[(df['Date'] >= start_of_last_week) & (df['Date'] <= end_of_last_week)]
-
-Star_stats_last_week = df_last_week.groupby('Star').agg(
+# Group by Star
+Star_stats_previous_week = df_previous_week.groupby('Star').agg(
     WinPct=('Win_Loss_Push', lambda x: (x == 'w').sum() / len(x) * 100),
     Units=('Units_W_L', 'sum')
 ).reset_index()
 
-Star_stats_last_week['WinPct'] = Star_stats_last_week['WinPct'].round(2)
-Star_stats_last_week['Units'] = Star_stats_last_week['Units'].round(2)
+Star_stats_previous_week['WinPct'] = Star_stats_previous_week['WinPct'].round(2)
+Star_stats_previous_week['Units'] = Star_stats_previous_week['Units'].round(2)
 
-st.dataframe(Star_stats_last_week.sort_values(by='Units', ascending=False), hide_index=True)
-
+# Display
+st.subheader("Star Win Percentage and Units Previous Week (Mon-Sun)")
+st.dataframe(Star_stats_previous_week.sort_values(by='Units', ascending=False), hide_index=True)
 # --- Top Star Each of the Last 20 Days ---
 st.header("Top Star Each Day (Last 20 Days)")
 
