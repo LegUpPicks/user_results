@@ -253,3 +253,60 @@ st.plotly_chart(fig_daily, key='daily_chart')
 
 # # Display the plot
 # st.plotly_chart(fig, key='cumulative_chart')
+
+
+
+
+# --- Last Week Units by Star ---
+st.header("Star Win Percentage and Units Last Week")
+
+# Define last week's start and end
+today = pd.Timestamp.now()
+start_of_this_week = today - pd.Timedelta(days=today.weekday())
+start_of_last_week = start_of_this_week - pd.Timedelta(days=7)
+end_of_last_week = start_of_this_week - pd.Timedelta(seconds=1)
+
+# Filter for last week's data
+df_last_week = df[(df['Date'] >= start_of_last_week) & (df['Date'] <= end_of_last_week)]
+
+Star_stats_last_week = df_last_week.groupby('Star').agg(
+    WinPct=('Win_Loss_Push', lambda x: (x == 'w').sum() / len(x) * 100),
+    Units=('Units_W_L', 'sum')
+).reset_index()
+
+Star_stats_last_week['WinPct'] = Star_stats_last_week['WinPct'].round(2)
+Star_stats_last_week['Units'] = Star_stats_last_week['Units'].round(2)
+
+st.dataframe(Star_stats_last_week.sort_values(by='Units', ascending=False), hide_index=True)
+
+# --- Top Star Each of the Last 20 Days ---
+st.header("Top Star Each Day (Last 20 Days)")
+
+# Filter for the last 20 days
+last_20_days = pd.Timestamp.now() - pd.Timedelta(days=20)
+df_last_20_days = df[df['Date'] >= last_20_days]
+
+# Group by Star and Date, sum the Units per Star per Day
+star_daily_units = df_last_20_days.groupby(['Date', 'Star']).agg(
+    DailyUnits=('Units_W_L', 'sum')
+).reset_index()
+
+# For each day, find the Star with highest DailyUnits
+top_star_per_day = star_daily_units.sort_values(['Date', 'DailyUnits'], ascending=[True, False]).groupby('Date').first().reset_index()
+
+# Round the units
+top_star_per_day['DailyUnits'] = top_star_per_day['DailyUnits'].round(2)
+
+# Rename columns for display
+top_star_per_day = top_star_per_day.rename(columns={
+    'Date': 'Date',
+    'Star': 'Top Star',
+    'DailyUnits': 'Units'
+})
+
+# Order by Date descending
+top_star_per_day = top_star_per_day.sort_values(by='Date', ascending=False)
+
+# Display
+st.dataframe(top_star_per_day, hide_index=True)
+
