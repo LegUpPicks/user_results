@@ -308,3 +308,13 @@ top_star_per_day = top_star_per_day.sort_values(by='Date', ascending=False)
 # Display
 st.dataframe(top_star_per_day, hide_index=True)
 
+# --- Full Data ---
+st.header("Full Data")
+
+all_data = df[['Star', 'Date', 'Bet', 'Sport', 'Odds', 'Units', 'Units_W_L']]
+
+# Order by Date descending
+all_data = all_data.sort_values(by='Date', ascending=False)
+
+# Display
+st.dataframe(all_data, hide_index=True)
