@@ -224,7 +224,7 @@ fig_weekly.update_layout(
 )
 
 # Display the charts
-st.plotly_chart(fig_weekly, key='weekly_chart')
+# st.plotly_chart(fig_weekly, key='weekly_chart')
 st.plotly_chart(fig_daily, key='daily_chart')
 
 # # Summary table
