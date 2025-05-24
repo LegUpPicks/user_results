@@ -51,6 +51,11 @@ url_calm = "https://docs.google.com/spreadsheets/d/1-ybVwvFP3_ZWi_eiHV9zYxUuDh71
 df_calm = conn.read(spreadsheet=url_calm, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
 df_calm['Star'] = 'Calm'
 
+url_gibby = "https://docs.google.com/spreadsheets/d/1X99O5d-atKTspkCn7MJT1_Iz1QdajAGjv2FVRhK0ebM/edit?usp=sharing"
+df_gibby = conn.read(spreadsheet=url_gibby, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8])
+df_gibby['Star'] = 'hshueuejtifkcnx'
+
+
 url_leg = "https://docs.google.com/spreadsheets/d/1AEiuEVQFHetOawGOWqpl2MbuPXcWsb6eeK01oRE8gGQ/edit?usp=sharing"
 df_leg = conn.read(spreadsheet=url_leg, usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8,9])
 df_leg = df_leg.rename(columns={
@@ -66,7 +71,7 @@ df_leg['Star'] = 'LegUp'
 df_leg['Date'] = pd.to_datetime(df_leg['Date'])
 df_leg = df_leg[df_leg['Date'] >= '2025-04-07']
 
-dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_warren,df_s_s,df_murt, df_ecu, df_calm, df_leg]
+dfs = [df_nimzy, df_kfalk, df_rip, df_cpa, df_warren,df_s_s,df_murt, df_ecu, df_calm, df_leg, df_gibby]
 df_all = pd.concat(dfs)
 
 # Reset index (optional, if you want a clean index)
